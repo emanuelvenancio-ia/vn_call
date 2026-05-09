@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VnCall Admin Panel</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- ── Sidebar ──────────────────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">V</div>
+      <div>
+        <div class="logo-title">VnCall</div>
+        <div class="logo-sub">Admin Panel</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="notify">
+        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        Enviar Notificação
+      </a>
+      <a href="#" class="nav-item" data-page="users">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Utilizadores
+      </a>
+      <a href="#" class="nav-item" data-page="logs">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+        Logs de Envio
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div id="auth-status" class="auth-status disconnected">
+        <span class="status-dot"></span>
+        <span class="status-text">Desconectado</span>
+      </div>
+      <button id="btn-logout" class="btn-logout" style="display:none">Sair</button>
+    </div>
+  </aside>
+
+  <!-- ── Main ─────────────────────────────────────────────────────────────── -->
+  <main class="main" id="main-content">
+
+    <!-- ── Login Overlay ──────────────────────────────────────────────────── -->
+    <div id="login-overlay" class="login-overlay">
+      <div class="login-card">
+        <div class="login-logo">
+          <div class="logo-icon large">V</div>
+          <h1>VnCall Admin</h1>
+          <p>Painel de Administração</p>
+        </div>
+        <div id="login-error" class="alert alert-error" style="display:none"></div>
+        <div class="form-group">
+          <label>API Key do Admin</label>
+          <input type="password" id="input-apikey" placeholder="Cole a sua Server Key do FCM ou Admin API Key" />
+        </div>
+        <div class="form-group">
+          <label>Project ID do Firebase</label>
+          <input type="text" id="input-projectid" placeholder="ex: vncall-59" value="vncall-59" />
+        </div>
+        <div class="form-group">
+          <label>Web API Key do Firebase</label>
+          <input type="text" id="input-webapikey" placeholder="ex: AIzaSy..." value="AIzaSyDIoLgBug2qmR4rEZmfpo_3DhGmoBUZyqk" />
+        </div>
+        <button id="btn-login" class="btn btn-primary btn-full">Entrar no Painel</button>
+        <p class="login-hint">
+          Precisa da <strong>Server Key</strong> do FCM (Cloud Messaging) e do <strong>Project ID</strong> do Firebase Console.<br>
+          Aceda a: Firebase Console → Definições do Projeto → Cloud Messaging
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Page: Dashboard ────────────────────────────────────────────────── -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-header">
+        <h2>Dashboard</h2>
+        <p>Visão geral da plataforma Vn-Call</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-users">—</div>
+            <div class="stat-label">Total de Utilizadores</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-online">—</div>
+            <div class="stat-label">Online Agora</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-notifs-sent">—</div>
+            <div class="stat-label">Notificações Enviadas</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-with-token">—</div>
+            <div class="stat-label">Com Token FCM</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Utilizadores Recentes</h3>
+          <button class="btn btn-sm btn-secondary" onclick="loadDashboard()">Actualizar</button>
+        </div>
+        <div id="recent-users-list" class="user-list-preview">
+          <div class="empty-state">Carregue o painel para ver os dados</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Page: Send Notification ────────────────────────────────────────── -->
+    <div id="page-notify" class="page">
+      <div class="page-header">
+        <h2>Enviar Notificação</h2>
+        <p>Envie notificações push FCM para utilizadores Vn-Call</p>
+      </div>
+
+      <div class="notify-layout">
+        <!-- Left: Composer -->
+        <div class="notify-composer">
+          <div class="card">
+            <div class="card-header"><h3>Compor Notificação</h3></div>
+            <div class="card-body">
+
+              <!-- Target -->
+              <div class="form-group">
+                <label>Destinatários</label>
+                <div class="target-options">
+                  <label class="radio-option">
+                    <input type="radio" name="target" value="all" checked />
+                    <span>Todos os utilizadores</span>
+                  </label>
+                  <label class="radio-option">
+                    <input type="radio" name="target" value="selected" />
+                    <span>Utilizadores seleccionados</span>
+                  </label>
+                  <label class="radio-option">
+                    <input type="radio" name="target" value="topic" />
+                    <span>Por tópico</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Topic input (shown when topic selected) -->
+              <div id="topic-group" class="form-group" style="display:none">
+                <label>Nome do Tópico</label>
+                <input type="text" id="input-topic" placeholder="ex: all_users, premium" />
+              </div>
+
+              <!-- Type -->
+              <div class="form-group">
+                <label>Tipo de Notificação</label>
+                <select id="input-type">
+                  <option value="alert">📢 Alerta Geral</option>
+                  <option value="system">⚙️ Sistema</option>
+                  <option value="security">🔒 Segurança</option>
+                  <option value="promo">🎁 Promoção</option>
+                  <option value="update">🔄 Actualização</option>
+                  <option value="call">📞 Chamada (teste)</option>
+                  <option value="message">💬 Mensagem (teste)</option>
+                </select>
+              </div>
+
+              <!-- Title -->
+              <div class="form-group">
+                <label>Título <span class="required">*</span></label>
+                <input type="text" id="input-title" placeholder="Título da notificação" maxlength="65" />
+                <span class="char-count" id="title-count">0/65</span>
+              </div>
+
+              <!-- Body -->
+              <div class="form-group">
+                <label>Mensagem <span class="required">*</span></label>
+                <textarea id="input-body" placeholder="Conteúdo da notificação..." maxlength="240" rows="4"></textarea>
+                <span class="char-count" id="body-count">0/240</span>
+              </div>
+
+              <!-- Image URL (optional) -->
+              <div class="form-group">
+                <label>URL da Imagem (opcional)</label>
+                <input type="url" id="input-image" placeholder="https://..." />
+              </div>
+
+              <!-- Priority -->
+              <div class="form-group">
+                <label>Prioridade</label>
+                <select id="input-priority">
+                  <option value="high">Alta</option>
+                  <option value="normal" selected>Normal</option>
+                </select>
+              </div>
+
+              <!-- Custom data -->
+              <div class="form-group">
+                <label>Dados Adicionais (JSON, opcional)</label>
+                <textarea id="input-data" placeholder='{"key": "value"}' rows="3"></textarea>
+              </div>
+
+              <!-- Preview -->
+              <div class="notif-preview" id="notif-preview">
+                <div class="preview-header">
+                  <div class="preview-app-icon">V</div>
+                  <span class="preview-app-name">Vn-Call</span>
+                  <span class="preview-time">agora</span>
+                </div>
+                <div class="preview-title" id="preview-title">Título da notificação</div>
+                <div class="preview-body" id="preview-body">Mensagem da notificação aparece aqui...</div>
+              </div>
+
+              <div id="send-error" class="alert alert-error" style="display:none"></div>
+              <div id="send-success" class="alert alert-success" style="display:none"></div>
+
+              <button id="btn-send" class="btn btn-primary btn-full">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                Enviar Notificação
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: User selector -->
+        <div class="notify-sidebar">
+          <div class="card">
+            <div class="card-header">
+              <h3>Utilizadores</h3>
+              <span class="badge" id="selected-count-badge">0 sel.</span>
+            </div>
+            <div class="card-body">
+              <input type="text" id="user-search" placeholder="Pesquisar..." class="search-input" />
+              <div id="user-selector-list" class="user-selector-list">
+                <div class="empty-state">Carregue os utilizadores primeiro</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Page: Users ─────────────────────────────────────────────────────── -->
+    <div id="page-users" class="page">
+      <div class="page-header">
+        <h2>Utilizadores</h2>
+        <p>Todos os utilizadores registados na plataforma Vn-Call</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Lista de Utilizadores</h3>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="users-search" placeholder="Pesquisar..." class="search-input" style="width:200px" />
+            <button class="btn btn-sm btn-secondary" onclick="loadUsers()">Actualizar</button>
+          </div>
+        </div>
+        <div id="users-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Avatar</th>
+                <th>Nome</th>
+                <th>ID Vn-Call</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Token FCM</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <tr><td colspan="7" class="empty-cell">Clique em Actualizar para carregar utilizadores</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Page: Logs ──────────────────────────────────────────────────────── -->
+    <div id="page-logs" class="page">
+      <div class="page-header">
+        <h2>Logs de Envio</h2>
+        <p>Histórico de notificações enviadas</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Histórico</h3>
+          <button class="btn btn-sm btn-danger" onclick="clearLogs()">Limpar</button>
+        </div>
+        <div id="logs-container" class="logs-container">
+          <div class="empty-state">Sem histórico de envios ainda</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
